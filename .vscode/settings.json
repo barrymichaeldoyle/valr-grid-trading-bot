@@ -9,5 +9,8 @@
   "css.validate": false,
   "eslint.validate": ["javascript", "typescript"],
   "eslint.format.enable": true,
-  "eslint.lintTask.enable": true
+  "eslint.lintTask.enable": true,
+  "files.exclude": {
+    "**/.env": true
+  }
 }
