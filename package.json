@@ -24,9 +24,13 @@
     "@typescript-eslint/eslint-plugin": "8.38.0",
     "@typescript-eslint/parser": "8.38.0",
     "eslint": "9.32.0",
-    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-import": "2.32.0",
     "eslint-plugin-node": "11.1.0",
     "ts-node": "10.9.2",
     "typescript": "5.8.3"
+  },
+  "dependencies": {
+    "@types/ws": "8.18.1",
+    "ws": "8.18.3"
   }
 }

@@ -104,6 +104,7 @@ export default [
       'no-unused-vars': 'off', // Using TypeScript version instead
       'prefer-const': 'error',
       'no-var': 'error',
+      'func-style': ['error', 'declaration'],
     },
   },
 
@@ -196,6 +197,35 @@ export default [
       ],
       'no-console': 'off', // Allow console in utility files
       'no-unused-vars': 'off',
+    },
+  },
+
+  // Node.js server files (src directory)
+  {
+    files: ['src/**/*.ts'],
+    languageOptions: {
+      parser: typescriptParser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+      },
+      globals: {
+        ...globals.node,
+        ...globals.es2021,
+        process: 'readonly',
+      },
+    },
+    plugins: {
+      '@typescript-eslint': typescriptEslint,
+    },
+    rules: {
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_' },
+      ],
+      'no-console': 'off', // Allow console in server files
+      'no-unused-vars': 'off',
+      'func-style': ['error', 'declaration'],
     },
   },
 
