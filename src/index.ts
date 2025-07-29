@@ -1,6 +1,11 @@
 import WebSocket from 'ws';
 
 import { getAccountAuthHeaders } from './auth/getAuthHeaders';
+import {
+  type BalanceUpdateData,
+  MESSAGE_TYPES,
+  type OpenOrdersUpdateData,
+} from './types';
 
 console.log('VALR Grid Trading Bot starting up...');
 
@@ -24,9 +29,28 @@ ws.on('open', () => {
   }, 30_000);
 });
 
-ws.on('message', (data: any) => {
-  console.log('message', data);
-  // work with data
+ws.on('message', (rawMessage: Buffer) => {
+  const message = JSON.parse(rawMessage.toString());
+
+  switch (message.type) {
+    case MESSAGE_TYPES.AUTHENTICATED:
+    case MESSAGE_TYPES.PONG:
+      break;
+    case MESSAGE_TYPES.OPEN_ORDERS_UPDATE: {
+      const data = message.data as OpenOrdersUpdateData;
+      console.log('Open Orders Update', data);
+      break;
+    }
+    case MESSAGE_TYPES.BALANCE_UPDATE: {
+      const data = message.data as BalanceUpdateData;
+      console.log(
+        `Balance Update: ${data.currency.symbol} - ${data.available}`
+      );
+      break;
+    }
+    default:
+      console.log('Unknown message type', message);
+  }
 });
 
 ws.on('error', (err: any) => {
