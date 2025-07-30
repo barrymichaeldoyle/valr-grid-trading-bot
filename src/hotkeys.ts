@@ -2,6 +2,7 @@ import * as readline from 'readline';
 
 import { balancesService } from './services/balances';
 import { LOG_TYPES, loggingService, type LogType } from './services/logger';
+import { openOrdersService } from './services/openOrders';
 
 const AVAILABLE_HOTKEYS_COMMANDS =
   'Press "b" to see balance summary, "l [type] [count] [verbose]" for most recent logs';
@@ -22,6 +23,8 @@ export function setupHotkeys(): readline.Interface {
 
     switch (command) {
       case 'b':
+      case 'balance':
+      case 'balances':
         balancesService.showBalanceSummary();
         break;
       case 'l':
@@ -45,6 +48,12 @@ export function setupHotkeys(): readline.Interface {
         });
         break;
       }
+      case 'o':
+      case 'open':
+      case 'orders':
+      case 'openorders':
+        openOrdersService.showOpenOrders();
+        break;
       default:
         console.log(AVAILABLE_HOTKEYS_COMMANDS);
         break;

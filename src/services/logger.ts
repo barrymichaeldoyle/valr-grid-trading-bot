@@ -1,6 +1,8 @@
 export const LOG_TYPES = {
   PING: 'PING',
   BALANCE_UPDATE: 'BALANCE_UPDATE',
+  OPEN_ORDERS_UPDATE: 'OPEN_ORDERS_UPDATE',
+  UNKNOWN: 'UNKNOWN',
 } as const;
 
 export type LogType = (typeof LOG_TYPES)[keyof typeof LOG_TYPES];

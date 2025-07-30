@@ -4,7 +4,6 @@ import { LOG_TYPES, loggingService } from './logger';
 
 class BalancesService {
   private balances: Balances = {};
-  private lastUpdateTime: Date | null = null;
 
   /**
    * Update a balance from a balance update message
@@ -34,10 +33,13 @@ class BalancesService {
     };
 
     this.balances[balanceData.currency.symbol] = balance;
-    this.lastUpdateTime = new Date();
     loggingService.log(
       LOG_TYPES.BALANCE_UPDATE,
-      `Balance updated: ${balanceData.currency.symbol}`,
+      `Balance updated: ${balanceData.currency.symbol.padEnd(6)} - ${parseFloat(
+        balanceData.totalInReference
+      )
+        .toFixed(2)
+        .padStart(8)} USDC`,
       balance
     );
   }

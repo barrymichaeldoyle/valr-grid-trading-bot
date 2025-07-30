@@ -5,7 +5,21 @@ export const MESSAGE_TYPES = {
   PONG: 'PONG',
 } as const;
 
-export type OpenOrdersUpdateData = unknown[];
+export type OpenOrdersUpdateData = {
+  orderId: string;
+  side: 'buy' | 'sell';
+  quantity: string;
+  pirce: string;
+  currenctPair: string;
+  createdAt: string;
+  originalQuantity: string;
+  filledPercentage: string;
+  type: 'market' | 'limit';
+  status: 'Placed' | string;
+  updatedAt: string;
+  timeInForce: 'GTC' | string;
+  allowMargin: boolean;
+}[];
 
 export type BalanceUpdateData = {
   currency: {

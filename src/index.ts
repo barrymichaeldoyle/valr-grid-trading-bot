@@ -4,6 +4,7 @@ import { getAccountAuthHeaders } from './auth/getAuthHeaders';
 import { setupHotkeys } from './hotkeys';
 import { balancesService } from './services/balances';
 import { LOG_TYPES, loggingService } from './services/logger';
+import { openOrdersService } from './services/openOrders';
 import { pingService } from './services/ping';
 import {
   type BalanceUpdateData,
@@ -40,7 +41,7 @@ ws.on('message', (rawMessage: Buffer) => {
       break;
     case MESSAGE_TYPES.OPEN_ORDERS_UPDATE: {
       const data = message.data as OpenOrdersUpdateData;
-      console.log('Open Orders Update', data);
+      openOrdersService.updateOpenOrders(data);
       break;
     }
     case MESSAGE_TYPES.BALANCE_UPDATE: {
@@ -48,8 +49,10 @@ ws.on('message', (rawMessage: Buffer) => {
       balancesService.updateBalance(data);
       break;
     }
-    default:
+    default: {
       console.log('Unknown message type', message);
+      loggingService.log(LOG_TYPES.UNKNOWN, 'Unknown message type', message);
+    }
   }
 });
 
