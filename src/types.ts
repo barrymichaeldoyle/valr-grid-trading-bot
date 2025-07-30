@@ -83,8 +83,8 @@ export type OpenOrdersUpdateData = {
   orderId: string;
   side: OrderSide;
   quantity: string;
-  pirce: string;
-  currenctPair: string;
+  price: string;
+  currencyPair: string;
   createdAt: string;
   originalQuantity: string;
   filledPercentage: string;

@@ -79,6 +79,11 @@ export class Logger {
       });
     }
     console.log('==================\n');
+    if (!logType) {
+      console.log(
+        `Available Log Types: ${Object.values(LOG_TYPES).join(' | ')}`
+      );
+    }
   }
 }
 
