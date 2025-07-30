@@ -23,7 +23,6 @@ ws.on('open', () => {
     if (ws.readyState === WebSocket.OPEN) {
       const pingMessage = { type: 'PING' };
       ws.send(JSON.stringify(pingMessage));
-      console.log('Ping sent');
     }
   }
 
@@ -44,19 +43,7 @@ ws.on('message', (rawMessage: Buffer) => {
     }
     case MESSAGE_TYPES.BALANCE_UPDATE: {
       const data = message.data as BalanceUpdateData;
-      console.log(
-        `Balance Update: ${data.currency.symbol} - ${data.available}`
-      );
-
-      // Update the balances service
       balancesService.updateBalance(data);
-
-      // Log some useful information about our balances
-      const nonZeroBalances = balancesService.getNonZeroBalances();
-      console.log(
-        `Total balances tracked: ${balancesService.getBalanceCount()}`
-      );
-      console.log(`Non-zero balances: ${Object.keys(nonZeroBalances).length}`);
       break;
     }
     default:
