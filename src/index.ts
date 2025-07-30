@@ -3,6 +3,7 @@ import WebSocket from 'ws';
 import { getAccountAuthHeaders } from './auth/getAuthHeaders';
 import { setupHotkeys } from './hotkeys';
 import { balancesService } from './services/balances';
+import { LOG_TYPES, loggingService } from './services/logger';
 import { pingService } from './services/ping';
 import {
   type BalanceUpdateData,
@@ -22,6 +23,7 @@ ws.on('open', () => {
   function pingCallback() {
     if (ws.readyState === WebSocket.OPEN) {
       const pingMessage = { type: 'PING' };
+      loggingService.log(LOG_TYPES.PING, 'Ping sent');
       ws.send(JSON.stringify(pingMessage));
     }
   }

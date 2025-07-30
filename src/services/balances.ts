@@ -1,5 +1,7 @@
 import { type Balance, type BalanceUpdateData, type Balances } from '../types';
 
+import { LOG_TYPES, loggingService } from './logger';
+
 class BalancesService {
   private balances: Balances = {};
   private lastUpdateTime: Date | null = null;
@@ -33,6 +35,11 @@ class BalancesService {
 
     this.balances[balanceData.currency.symbol] = balance;
     this.lastUpdateTime = new Date();
+    loggingService.log(
+      LOG_TYPES.BALANCE_UPDATE,
+      `Balance updated: ${balanceData.currency.symbol}`,
+      balance
+    );
   }
 
   /**
