@@ -10,7 +10,9 @@ import {
   type BalanceUpdateData,
   MESSAGE_TYPES,
   type OpenOrdersUpdateData,
+  type OrderStatusUpdateData,
 } from './types';
+import { handleOrderStatusUpdate } from './utils/handleOrderStatusUpdate';
 
 const ws = new WebSocket('wss://api.valr.com/ws/account', {
   headers: getAccountAuthHeaders(),
@@ -38,6 +40,9 @@ ws.on('message', (rawMessage: Buffer) => {
   switch (message.type) {
     case MESSAGE_TYPES.AUTHENTICATED:
     case MESSAGE_TYPES.PONG:
+    case MESSAGE_TYPES.NEW_ACCOUNT_HISTORY_RECORD:
+    case MESSAGE_TYPES.NEW_ACCOUNT_TRADE:
+    case MESSAGE_TYPES.ORDER_PROCESSED:
       break;
     case MESSAGE_TYPES.OPEN_ORDERS_UPDATE: {
       const data = message.data as OpenOrdersUpdateData;
@@ -49,6 +54,12 @@ ws.on('message', (rawMessage: Buffer) => {
       balancesService.updateBalance(data);
       break;
     }
+    case MESSAGE_TYPES.ORDER_STATUS_UPDATE: {
+      const data = message.data as OrderStatusUpdateData;
+      handleOrderStatusUpdate(data);
+      break;
+    }
+
     default: {
       console.log('Unknown message type', message);
       loggingService.log(LOG_TYPES.UNKNOWN, 'Unknown message type', message);
