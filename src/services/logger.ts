@@ -73,7 +73,7 @@ export class Logger {
       recentLogs.forEach((log) => {
         const time = log.timestamp.toLocaleTimeString();
         console.log(`[${time}] ${log.type}: ${log.message}`);
-        if (showData) {
+        if (showData && log.data) {
           console.log(log.data);
         }
       });

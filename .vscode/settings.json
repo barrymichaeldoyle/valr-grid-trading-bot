@@ -11,6 +11,6 @@
   "eslint.format.enable": true,
   "eslint.lintTask.enable": true,
   "files.exclude": {
-    "**/.env": true
+    // "**/.env": true
   }
 }
