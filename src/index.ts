@@ -1,32 +1,33 @@
 import WebSocket from 'ws';
 
 import { getAccountAuthHeaders } from './auth/getAuthHeaders';
+import { setupHotkeys } from './hotkeys';
+import { balancesService } from './services/balances';
+import { pingService } from './services/ping';
 import {
   type BalanceUpdateData,
   MESSAGE_TYPES,
   type OpenOrdersUpdateData,
 } from './types';
 
-console.log('VALR Grid Trading Bot starting up...');
-
 const ws = new WebSocket('wss://api.valr.com/ws/account', {
   headers: getAccountAuthHeaders(),
 });
 
-let pingInterval: ReturnType<typeof setInterval> | null = null;
+const rl = setupHotkeys();
 
 ws.on('open', () => {
   console.log('Connection opened');
 
-  pingInterval = setInterval(() => {
+  function pingCallback() {
     if (ws.readyState === WebSocket.OPEN) {
-      const pingMessage = {
-        type: 'PING',
-      };
+      const pingMessage = { type: 'PING' };
       ws.send(JSON.stringify(pingMessage));
       console.log('Ping sent');
     }
-  }, 30_000);
+  }
+
+  pingService.start(pingCallback);
 });
 
 ws.on('message', (rawMessage: Buffer) => {
@@ -46,6 +47,16 @@ ws.on('message', (rawMessage: Buffer) => {
       console.log(
         `Balance Update: ${data.currency.symbol} - ${data.available}`
       );
+
+      // Update the balances service
+      balancesService.updateBalance(data);
+
+      // Log some useful information about our balances
+      const nonZeroBalances = balancesService.getNonZeroBalances();
+      console.log(
+        `Total balances tracked: ${balancesService.getBalanceCount()}`
+      );
+      console.log(`Non-zero balances: ${Object.keys(nonZeroBalances).length}`);
       break;
     }
     default:
@@ -60,10 +71,6 @@ ws.on('error', (err: any) => {
 
 ws.on('close', () => {
   console.log('Connection closed');
-  // Clean up ping interval
-  if (pingInterval) {
-    clearInterval(pingInterval);
-    pingInterval = null;
-  }
-  // reconnect if needed
+  pingService.stop();
+  rl.close();
 });

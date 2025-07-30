@@ -29,3 +29,17 @@ export type BalanceUpdateData = {
   totalInReferenceWeighted: string;
   referenceCurrency: string;
 };
+
+export type Balance = {
+  symbol: string;
+  available: string;
+  reserved: string;
+  total: string;
+  updatedAt: string;
+  currency: BalanceUpdateData['currency'];
+  referenceCurrency: string;
+  totalInReference: string;
+  availableInReference: string;
+};
+
+export type Balances = Record<string, Balance>;
