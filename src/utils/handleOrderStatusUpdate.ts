@@ -4,7 +4,7 @@ import { getAuthHeaders } from '../auth/getAuthHeaders';
 import { LOG_TYPES, loggingService } from '../services/logger';
 import { type OrderStatusUpdateData } from '../types';
 
-const COUNTER_ORDER_PRICE_PERCENTAGE = new Big(0.005);
+const COUNTER_ORDER_PRICE_PERCENTAGE = new Big(0.0025); // 0.25%
 
 const BASE_PATH = 'https://api.valr.com';
 const LIMIT_ORDER_PATH = '/v1/orders/limit';
@@ -21,11 +21,11 @@ export async function handleOrderStatusUpdate(
   orderStatusUpdateData: OrderStatusUpdateData
 ) {
   if (orderStatusUpdateData.orderStatusType === 'Filled') {
-    loggingService.log(
-      LOG_TYPES.ORDER_STATUS_UPDATE,
-      'Order Filled',
-      orderStatusUpdateData
-    );
+    loggingService.log({
+      type: LOG_TYPES.ORDER_STATUS_UPDATE,
+      message: 'Order Filled',
+      data: orderStatusUpdateData,
+    });
 
     const wasBuyOrder = orderStatusUpdateData.orderSide === 'buy';
     const counterOrderSide = wasBuyOrder ? 'SELL' : 'BUY';
@@ -62,18 +62,19 @@ export async function handleOrderStatusUpdate(
     fetch(BASE_PATH + LIMIT_ORDER_PATH, requestOptions)
       .then((response) => response.text())
       .then((result) => {
-        loggingService.log(
-          LOG_TYPES.COUNTER_ORDER_PLACED,
-          'Counter order placed',
-          JSON.parse(result)
-        );
+        loggingService.log({
+          type: LOG_TYPES.COUNTER_ORDER_PLACED,
+          message: 'Counter order placed',
+          data: JSON.parse(result),
+          logToConsole: true,
+        });
       })
       .catch((error) => {
-        loggingService.log(
-          LOG_TYPES.COUNTER_ORDER_FAILED,
-          'Counter order failed',
-          error
-        );
+        loggingService.log({
+          type: LOG_TYPES.ERROR,
+          message: 'Counter order placement failed',
+          data: error,
+        });
       });
   }
 }

@@ -8,7 +8,7 @@ import { openOrdersService } from './services/openOrders';
 import { pingService } from './services/ping';
 import {
   type BalanceUpdateData,
-  MESSAGE_TYPES,
+  MESSAGE_TYPE,
   type OpenOrdersUpdateData,
   type OrderStatusUpdateData,
 } from './types';
@@ -26,7 +26,10 @@ ws.on('open', () => {
   function pingCallback() {
     if (ws.readyState === WebSocket.OPEN) {
       const pingMessage = { type: 'PING' };
-      loggingService.log(LOG_TYPES.PING, 'Ping sent');
+      loggingService.log({
+        type: LOG_TYPES.PING,
+        message: 'Ping sent',
+      });
       ws.send(JSON.stringify(pingMessage));
     }
   }
@@ -38,23 +41,23 @@ ws.on('message', (rawMessage: Buffer) => {
   const message = JSON.parse(rawMessage.toString());
 
   switch (message.type) {
-    case MESSAGE_TYPES.AUTHENTICATED:
-    case MESSAGE_TYPES.PONG:
-    case MESSAGE_TYPES.NEW_ACCOUNT_HISTORY_RECORD:
-    case MESSAGE_TYPES.NEW_ACCOUNT_TRADE:
-    case MESSAGE_TYPES.ORDER_PROCESSED:
+    case MESSAGE_TYPE.AUTHENTICATED:
+    case MESSAGE_TYPE.PONG:
+    case MESSAGE_TYPE.NEW_ACCOUNT_HISTORY_RECORD:
+    case MESSAGE_TYPE.NEW_ACCOUNT_TRADE:
+    case MESSAGE_TYPE.ORDER_PROCESSED:
       break;
-    case MESSAGE_TYPES.OPEN_ORDERS_UPDATE: {
+    case MESSAGE_TYPE.OPEN_ORDERS_UPDATE: {
       const data = message.data as OpenOrdersUpdateData;
       openOrdersService.updateOpenOrders(data);
       break;
     }
-    case MESSAGE_TYPES.BALANCE_UPDATE: {
+    case MESSAGE_TYPE.BALANCE_UPDATE: {
       const data = message.data as BalanceUpdateData;
       balancesService.updateBalance(data);
       break;
     }
-    case MESSAGE_TYPES.ORDER_STATUS_UPDATE: {
+    case MESSAGE_TYPE.ORDER_STATUS_UPDATE: {
       const data = message.data as OrderStatusUpdateData;
       handleOrderStatusUpdate(data);
       break;
@@ -62,7 +65,11 @@ ws.on('message', (rawMessage: Buffer) => {
 
     default: {
       console.log('Unknown message type', message);
-      loggingService.log(LOG_TYPES.UNKNOWN, 'Unknown message type', message);
+      loggingService.log({
+        type: LOG_TYPES.UNKNOWN,
+        message: 'Unknown message type',
+        data: message,
+      });
     }
   }
 });

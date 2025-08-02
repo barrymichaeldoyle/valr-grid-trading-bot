@@ -8,11 +8,11 @@ class OpenOrdersService {
 
   updateOpenOrders(openOrders: OpenOrdersUpdateData) {
     this.openOrders = openOrders;
-    loggingService.log(
-      LOG_TYPES.OPEN_ORDERS_UPDATE,
-      `Open Orders Update - ${openOrders.length} orders`,
-      openOrders
-    );
+    loggingService.log({
+      type: LOG_TYPES.OPEN_ORDERS_UPDATE,
+      message: `Open Orders Update - ${openOrders.length} orders`,
+      data: openOrders,
+    });
   }
 
   showOpenOrders() {

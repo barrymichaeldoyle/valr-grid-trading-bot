@@ -4,7 +4,7 @@ export const LOG_TYPES = {
   OPEN_ORDERS_UPDATE: 'OPEN_ORDERS_UPDATE',
   ORDER_STATUS_UPDATE: 'ORDER_STATUS_UPDATE',
   COUNTER_ORDER_PLACED: 'COUNTER_ORDER_PLACED',
-  COUNTER_ORDER_FAILED: 'COUNTER_ORDER_FAILED',
+  ERROR: 'ERROR',
   UNKNOWN: 'UNKNOWN',
 } as const;
 
@@ -21,7 +21,17 @@ export class Logger {
   private logs: LogEntry[] = [];
   readonly MAX_LOGS = 1000;
 
-  log(type: LogType, message: string, data?: object): void {
+  log({
+    type,
+    message,
+    data,
+    logToConsole = false,
+  }: {
+    type: LogType;
+    message: string;
+    data?: object;
+    logToConsole?: boolean;
+  }): void {
     const entry: LogEntry = {
       timestamp: new Date(),
       type,
@@ -34,6 +44,10 @@ export class Logger {
     // Remove oldest logs if we exceed the limit
     if (this.logs.length > this.MAX_LOGS) {
       this.logs = this.logs.slice(-this.MAX_LOGS);
+    }
+
+    if (logToConsole) {
+      console.log(entry);
     }
   }
 
