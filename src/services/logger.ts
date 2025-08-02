@@ -47,7 +47,7 @@ export class Logger {
     }
 
     if (logToConsole) {
-      console.log(entry);
+      this.showLog(entry);
     }
   }
 
@@ -85,11 +85,7 @@ export class Logger {
       console.log('No logs available');
     } else {
       recentLogs.forEach((log) => {
-        const time = log.timestamp.toLocaleTimeString();
-        console.log(`[${time}] ${log.type}: ${log.message}`);
-        if (showData && log.data) {
-          console.log(log.data);
-        }
+        this.showLog(log, showData);
       });
     }
     console.log('==================\n');
@@ -97,6 +93,14 @@ export class Logger {
       console.log(
         `Available Log Types: ${Object.values(LOG_TYPES).join(' | ')}`
       );
+    }
+  }
+
+  showLog(log: LogEntry, showData = false) {
+    const time = log.timestamp.toLocaleTimeString();
+    console.log(`[${time}] ${log.type}: ${log.message}`);
+    if (showData && log.data) {
+      console.log(log.data);
     }
   }
 }

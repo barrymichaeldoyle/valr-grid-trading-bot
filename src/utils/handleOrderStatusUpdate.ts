@@ -4,6 +4,8 @@ import { getAuthHeaders } from '../auth/getAuthHeaders';
 import { LOG_TYPES, loggingService } from '../services/logger';
 import { type OrderStatusUpdateData } from '../types';
 
+import { formatNumber } from './formatNumber';
+
 const COUNTER_ORDER_PRICE_PERCENTAGE = new Big(0.0025); // 0.25%
 
 const BASE_PATH = 'https://api.valr.com';
@@ -62,10 +64,31 @@ export async function handleOrderStatusUpdate(
     fetch(BASE_PATH + LIMIT_ORDER_PATH, requestOptions)
       .then((response) => response.text())
       .then((result) => {
+        const parsedResult = JSON.parse(result);
+        const usdtValue = new Big(counterOrderQuantity)
+          .times(counterOrderPrice)
+          .toString();
+
         loggingService.log({
           type: LOG_TYPES.COUNTER_ORDER_PLACED,
-          message: 'Counter order placed',
-          data: JSON.parse(result),
+          message: `Counter ${counterOrderSide} ${counterOrderQuantity} ${
+            orderStatusUpdateData.currencyPair
+          } (${formatNumber(usdtValue)} USDT) at ${formatNumber(
+            counterOrderPrice
+          )}`,
+          data: {
+            ...parsedResult,
+            orderDetails: {
+              side: counterOrderSide,
+              quantity: counterOrderQuantity,
+              price: counterOrderPrice,
+              usdtValue: usdtValue,
+              currencyPair: orderStatusUpdateData.currencyPair,
+              originalOrderSide: orderStatusUpdateData.orderSide,
+              originalOrderPrice: orderStatusUpdateData.executedPrice,
+              originalOrderQuantity: orderStatusUpdateData.executedQuantity,
+            },
+          },
           logToConsole: true,
         });
       })
