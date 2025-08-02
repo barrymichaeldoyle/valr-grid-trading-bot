@@ -1,4 +1,4 @@
-export const MESSAGE_TYPES = {
+export const MESSAGE_TYPE = {
   AUTHENTICATED: 'AUTHENTICATED',
   OPEN_ORDERS_UPDATE: 'OPEN_ORDERS_UPDATE',
   BALANCE_UPDATE: 'BALANCE_UPDATE',
@@ -8,12 +8,48 @@ export const MESSAGE_TYPES = {
   NEW_ACCOUNT_HISTORY_RECORD: 'NEW_ACCOUNT_HISTORY_RECORD',
   NEW_ACCOUNT_TRADE: 'NEW_ACCOUNT_TRADE',
 } as const;
+export type MessageType = (typeof MESSAGE_TYPE)[keyof typeof MESSAGE_TYPE];
 
-export type OrderSide = 'buy' | 'sell';
+export const ORDER_SIDE = {
+  BUY: 'buy',
+  SELL: 'sell',
+} as const;
+export type OrderSide = (typeof ORDER_SIDE)[keyof typeof ORDER_SIDE];
 
-export type OrderType = 'market' | 'limit';
+export const ORDER_TYPE = {
+  MARKET: 'market',
+  LIMIT: 'limit',
+} as const;
+export type OrderType = (typeof ORDER_TYPE)[keyof typeof ORDER_TYPE];
 
-export type OrderStatusType = 'Placed' | 'Filled' | string;
+export const ORDER_STATUS = {
+  PLACED: 'Placed',
+  FILLED: 'Filled',
+} as const;
+export type OrderStatus = (typeof ORDER_STATUS)[keyof typeof ORDER_STATUS];
+
+export const TIME_IN_FORCE = {
+  /**
+   * Good Till Canceled
+   */
+  GTC: 'GTC',
+  /**
+   * Immediate or Cancel
+   */
+  IOC: 'IOC',
+  /**
+   * Fill or Kill
+   */
+  FOK: 'FOK',
+} as const;
+export type TimeInForce = (typeof TIME_IN_FORCE)[keyof typeof TIME_IN_FORCE];
+
+export const TRANSACTION_TYPE = {
+  LIMIT_BUY: 'LIMIT_BUY',
+  LIMIT_SELL: 'LIMIT_SELL',
+} as const;
+export type TransactionType =
+  (typeof TRANSACTION_TYPE)[keyof typeof TRANSACTION_TYPE];
 
 export type OrderProcessedData = {
   orderId: string;
@@ -34,7 +70,7 @@ export type Currency = {
 
 export type OrderStatusUpdateData = {
   orderId: string;
-  orderStatusType: OrderStatusType;
+  orderStatusType: OrderStatus;
   currencyPair: string;
   originalPrice: string;
   remainingQuantity: string;
@@ -63,7 +99,7 @@ export type NewAccountTrade = {
 };
 
 export type NewAccountHistoryRecord = {
-  transactionType: { type: 'LIMIT_BUY' | string; description: string };
+  transactionType: { type: TransactionType; description: string };
   debitCurrency: Currency;
   debitValue: string;
   creditCurrency: Currency;
@@ -89,9 +125,9 @@ export type OpenOrdersUpdateData = {
   originalQuantity: string;
   filledPercentage: string;
   type: OrderType;
-  status: 'Placed' | string;
+  status: OrderStatus;
   updatedAt: string;
-  timeInForce: 'GTC' | string;
+  timeInForce: TimeInForce;
   allowMargin: boolean;
 }[];
 
@@ -115,7 +151,7 @@ export type Balance = {
   reserved: string;
   total: string;
   updatedAt: string;
-  currency: BalanceUpdateData['currency'];
+  currency: Currency;
   referenceCurrency: string;
   totalInReference: string;
   availableInReference: string;
