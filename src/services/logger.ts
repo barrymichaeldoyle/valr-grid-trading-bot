@@ -1,3 +1,5 @@
+import chalk from 'chalk';
+
 export const LOG_TYPES = {
   PING: 'PING',
   BALANCE_UPDATE: 'BALANCE_UPDATE',
@@ -97,10 +99,12 @@ export class Logger {
   }
 
   showLog(log: LogEntry, showData = false) {
-    const time = log.timestamp.toLocaleTimeString();
-    console.log(`[${time}] ${log.type}: ${log.message}`);
+    const time = chalk.gray(log.timestamp.toLocaleTimeString());
+    const type = chalk.magenta(`${log.type}:`);
+
+    console.log(`${time} ${type} ${log.message}`);
     if (showData && log.data) {
-      console.log(log.data);
+      console.log(chalk.cyan(JSON.stringify(log.data, null, 2)));
     }
   }
 }

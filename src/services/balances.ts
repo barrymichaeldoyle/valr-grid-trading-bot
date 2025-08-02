@@ -1,4 +1,5 @@
 import { type Balance, type BalanceUpdateData, type Balances } from '../types';
+import { formatNumber } from '../utils/formatNumber';
 
 import { LOG_TYPES, loggingService } from './logger';
 
@@ -33,15 +34,13 @@ class BalancesService {
     };
 
     this.balances[balanceData.currency.symbol] = balance;
-    loggingService.log(
-      LOG_TYPES.BALANCE_UPDATE,
-      `Balance updated: ${balanceData.currency.symbol.padEnd(6)} - ${parseFloat(
-        balanceData.totalInReference
-      )
-        .toFixed(2)
-        .padStart(8)} USDC`,
-      balance
-    );
+    loggingService.log({
+      type: LOG_TYPES.BALANCE_UPDATE,
+      message: `Balance updated: ${balanceData.currency.symbol.padEnd(
+        6
+      )} - ${formatNumber(balanceData.totalInReference)} USDC`,
+      data: balance,
+    });
   }
 
   /**

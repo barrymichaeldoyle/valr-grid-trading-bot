@@ -71,7 +71,7 @@ export async function handleOrderStatusUpdate(
 
         loggingService.log({
           type: LOG_TYPES.COUNTER_ORDER_PLACED,
-          message: `Counter ${counterOrderSide} ${counterOrderQuantity} ${
+          message: `${counterOrderSide} ${counterOrderQuantity} ${
             orderStatusUpdateData.currencyPair
           } (${formatNumber(usdtValue)} USDT) at ${formatNumber(
             counterOrderPrice
